@@ -347,7 +347,7 @@ def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
 
-      state:   The current search state
+      state:   The current search stat
                (a data structure you chose in your search problem)
 
       problem: The CornersProblem instance for this layout.
@@ -356,33 +356,40 @@ def cornersHeuristic(state, problem):
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
     """
-    corners = problem.corners # These are the corner coordinates
-    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    corners = problem.corners  # These are the corner coordinates
+    walls = problem.walls  # These are the walls of the maze
 
-    "*** YOUR CODE HERE ***"
-    result = 0
     currentPosition, corners_visited = state
-    # 1) manhattan distance to the next unvisited corner, gives: total cost of 106,  nodes expanded: 1278
-    #    num_corner=0
-    #    for corner in corners_visited:
-    #        if (not corner):
-    #            result=util.manhattanDistance(currentPosition,corners[num_corner])
-    #            break
-    #        num_corner+=1
 
-    # 2) number of unvisited corners, gives: total cost of 106,  nodes expanded: 1908
-    #    result=0
-    #    for corner in corners_visited:
-    #        if (not corner):
-    #            result+=1
+    result = 0
+    next_corners_visited = corners_visited[:]
+    next_position = currentPosition[:]
+    for i in range(4):
+        # print "Step ",i,next_position,next_corners_visited
+        dist_to_corners = [0, 0, 0, 0]
+        num_corner = 0
+        for corner in next_corners_visited:
+            dist_to_corners[num_corner] = util.manhattanDistance(next_position, corners[num_corner])
+            num_corner += 1
 
-    # 3) manhattan dist to closest + manhattan to the unvisited others , gives: total cost of 106,  nodes expanded: 692
-    # find an order...
-class AStarCornersAgent(SearchAgent):
-    "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
-    def __init__(self):
-        self.searchFunction = lambda prob: search.aStarSearch(prob, cornersHeuristic)
-        self.searchType = CornersProblem
+        num_closest = 0
+        num_corner = 0
+        for dist_corner in dist_to_corners:
+            if (next_corners_visited[num_closest]):
+                num_closest = num_corner
+            if (not next_corners_visited[num_corner]) and (dist_corner < dist_to_corners[num_closest]):
+                num_closest = num_corner
+            num_corner += 1
+        if (not next_corners_visited[num_closest]):
+            result += dist_to_corners[num_closest]
+            next_position = corners[num_closest][:]
+            next_corners_visited[num_closest] = True
+        else:
+            break
+
+    # print "cornersHeuristic: ",result
+
+    return result
 
 class FoodSearchProblem:
     """
