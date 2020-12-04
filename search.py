@@ -197,12 +197,11 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     node, actions, allcost = fringe.pop()
     visited_nodes = [
         (node, 0)]  # with cost why do I have to do that? => would be better to add them when state is unpacked
-    # print "pop ",allcost
     while (not problem.isGoalState(node)):
 
         successors = problem.getSuccessors(node)
+
         for next_nodes, action, cost in successors:
-            #
             already_seen = False
             total_cost = problem.getCostOfActions(actions + [action])
             for i in range(len(visited_nodes)):
@@ -210,12 +209,11 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 if (next_nodes == state_tmp) and (total_cost >= cost_tmp):
                     already_seen = True
             if (not already_seen):
-                otal_cost = problem.getCostOfActions(actions + [action])
+                total_cost = problem.getCostOfActions(actions + [action])
                 fringe.push((next_nodes, actions + [action], total_cost),
                             total_cost + heuristic(next_nodes, problem))
                 visited_nodes.append((next_nodes, total_cost))
                 # calculate "create cost ",total_cost+cost
-        # print "All actions: ",allactions
         node, actions, allcost = fringe.pop()
 
     return actions
