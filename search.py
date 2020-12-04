@@ -143,8 +143,36 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    # util.raiseNotDefined()
-    # print "Enter uniformCostSearch..."
+    # create a Queue to keep track of nodes we are going to explore
+    fringe = util.PriorityQueue()
+
+    # we will push in tuples (coordinates, pass) in the stack
+    fringe.push((problem.getStartState(), [], 0), 0)
+
+    node, actions, allcost = fringe.pop()
+    visited_nodes = [
+        (node, 0)]  # with cost why do I have to do that? => would be better to add them when state is unpacked
+    # print "pop ",allcost
+    while (not problem.isGoalState(node)):
+
+        successors = problem.getSuccessors(node)
+        for next_nodes, action, cost in successors:
+            #
+            already_seen = False
+            total_cost = problem.getCostOfActions(actions + [action])
+            for i in range(len(visited_nodes)):
+                state_tmp, cost_tmp = visited_nodes[i]
+                if (next_nodes == state_tmp) and (total_cost >= cost_tmp):
+                    already_seen = True
+            if (not already_seen):
+                fringe.push((next_nodes, actions + [action], total_cost), total_cost)
+                visited_nodes.append((next_nodes, total_cost))
+                # calculate "create cost ",total_cost+cost
+        # print "All actions: ",allactions
+        node, actions, allcost = fringe.pop()
+
+    return actions
+
 
 def nullHeuristic(state, problem=None):
     """
