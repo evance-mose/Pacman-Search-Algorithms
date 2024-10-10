@@ -1,1 +1,1 @@
-# COM422-Assignment-1
+# Pacman : Search Algorithms
